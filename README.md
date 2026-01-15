@@ -45,7 +45,7 @@ This system supports the following functionalities:
 
 ````
 
-*The project follows the typical MVC structure used in Flask apps.* :contentReference[oaicite:1]{index=1}
+*The project follows the typical MVC structure used in Flask apps.*
 
 ---
 
