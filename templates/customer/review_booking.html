@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block title %}Review Booking - Cinema System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .review-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .section {
+        background: rgba(34, 31, 31, 0.9);
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .section h3 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--primary-color);
+    }
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    .label {
+        font-weight: bold;
+        color: #aaa;
+    }
+    .value {
+        color: #fff;
+        text-align: right;
+    }
+    .seats-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .seat-item {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    .seat-item.vip {
+        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        color: #000;
+    }
+    .discount-item {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin: 8px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    .price-summary {
+        background: linear-gradient(135deg, rgba(229, 9, 20, 0.1) 0%, rgba(229, 9, 20, 0.05) 100%);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        border: 2px solid var(--primary-color);
+    }
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        font-size: 16px;
+    }
+    .final-price {
+        font-size: 28px;
+        font-weight: bold;
+        color: var(--primary-color);
+        border-top: 2px solid var(--primary-color);
+        padding-top: 15px;
+        margin-top: 10px;
+    }
+    .button-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+    .btn-confirm {
+        flex: 1;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
+        transition: all 0.3s ease;
+    }
+    .btn-confirm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(40, 167, 69, 0.6);
+    }
+    .btn-cancel {
+        flex: 1;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border: none;
+        box-shadow: 0 4px 10px rgba(220, 53, 69, 0.4);
+        transition: all 0.3s ease;
+    }
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(220, 53, 69, 0.6);
+    }
+    .page-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--primary-color);
+    }
+    .page-header h1 {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+    .badge-count {
+        background: var(--primary-color);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-left: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="review-container">
+    <div class="page-header">
+        <h1><i class="fas fa-clipboard-check"></i> Review Your Booking</h1>
+        <p class="text-muted">Please review your booking details before confirming</p>
+    </div>
+    
+    <!-- Movie Info -->
+    <div class="section">
+        <h3><i class="fas fa-film"></i> Movie Information</h3>
+        <div class="info-row">
+            <span class="label">Movie:</span>
+            <span class="value">{{ movie.Title }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Cinema:</span>
+            <span class="value">{{ cinema_name }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Date:</span>
+            <span class="value">{{ show_date }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Time:</span>
+            <span class="value">{{ start_time[:5] }}</span>
+        </div>
+    </div>
+
+    <!-- Seats -->
+    <div class="section">
+        <h3>
+            <i class="fas fa-couch"></i> Selected Seats
+            <span class="badge-count">{{ seats|length }}</span>
+        </h3>
+        <div class="seats-list">
+            {% for seat in seats %}
+                <div class="seat-item {% if seat.type == 'VIP' %}vip{% endif %}">
+                    <i class="fas fa-chair"></i> Seat {{ seat.number }} - {{ seat.type }}
+                    <br>
+                    <small>{{ "{:,.0f}".format(seat.price).replace(',', '.') }} VND</small>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Discounts -->
+    {% if discounts %}
+    <div class="section">
+        <h3>
+            <i class="fas fa-tags"></i> Applied Discounts
+            <span class="badge-count">{{ discounts|length }}</span>
+        </h3>
+        {% for discount in discounts %}
+            <div class="discount-item">
+                <div>
+                    <i class="fas fa-tag"></i> <strong>{{ discount.code }}</strong>
+                    <br>
+                    <small>{{ discount.type }}</small>
+                </div>
+                <div style="text-align: right; font-size: 1.1rem; font-weight: bold;">
+                    -{{ "{:,.0f}".format(discount.value|int).replace(',', '.') }} VND
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Price Summary -->
+    <div class="section">
+        <h3><i class="fas fa-receipt"></i> Price Summary</h3>
+        <div class="price-summary">
+            <div class="price-row">
+                <span class="label">Subtotal:</span>
+                <span class="value">{{ "{:,.0f}".format(total_price).replace(',', '.') }} VND</span>
+            </div>
+            {% if total_discount > 0 %}
+            <div class="price-row">
+                <span class="label">Discount:</span>
+                <span class="value" style="color: #28a745;">-{{ "{:,.0f}".format(total_discount|int).replace(',', '.') }} VND</span>
+            </div>
+            {% endif %}
+            <div class="price-row final-price">
+                <span><i class="fas fa-money-bill-wave"></i> Total:</span>
+                <span>{{ "{:,.0f}".format(final_price|int).replace(',', '.') }} VND</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm/Cancel Buttons -->
+    <div class="button-group">
+        <form method="POST" action="{{ url_for('customer.confirm_payment') }}" style="flex: 1;">
+            <input type="hidden" name="cinema_id" value="{{ cinema_id }}">
+            <input type="hidden" name="auditorium_id" value="{{ auditorium_id }}">
+            <input type="hidden" name="show_date" value="{{ show_date }}">
+            <input type="hidden" name="start_time" value="{{ start_time }}">
+            {% for seat in selected_seats %}
+                <input type="hidden" name="selected_seats" value="{{ seat }}">
+            {% endfor %}
+            {% for discount_id in discount_ids %}
+                <input type="hidden" name="discount_ids" value="{{ discount_id }}">
+            {% endfor %}
+            <button type="submit" class="btn btn-confirm w-100">
+                <i class="fas fa-check-circle"></i> Confirm Payment
+            </button>
+        </form>
+        
+        <a href="{{ url_for('customer.dashboard') }}" class="btn btn-cancel">
+            <i class="fas fa-times-circle"></i> Cancel Booking
+        </a>
+    </div>
+</div>
+{% endblock %}

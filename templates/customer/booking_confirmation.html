@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+{% block title %}Booking Confirmation{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+        min-height: 100vh;
+    }
+
+    .confirmation-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .confirmation-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .confirmation-header h1 {
+        color: var(--primary-color);
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
+    }
+
+    .success-icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+        animation: scaleIn 0.5s ease;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .confirmation-card {
+        background: linear-gradient(135deg, #1e1e2e 0%, #252538 100%);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid #333;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-title {
+        color: var(--primary-color);
+        font-size: 1.6em;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #333;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .info-item {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 3px solid var(--primary-color);
+    }
+
+    .info-item strong {
+        display: block;
+        color: #999;
+        font-size: 0.9em;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .info-item span {
+        color: #fff;
+        font-size: 1.1em;
+        font-weight: 600;
+    }
+
+    .seats-display {
+        background: rgba(229, 9, 20, 0.1);
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid rgba(229, 9, 20, 0.3);
+        margin: 20px 0;
+    }
+
+    .seats-display strong {
+        color: var(--primary-color);
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .seat-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .seat-badge {
+        background: linear-gradient(135deg, var(--primary-color), #b20710);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(229, 9, 20, 0.3);
+    }
+
+    .discount-section {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 20px;
+        border-radius: 12px;
+        margin: 20px 0;
+        border: 1px dashed #444;
+    }
+
+    .discount-section h5 {
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-size: 1.2em;
+    }
+
+    .discount-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .discount-item {
+        background: linear-gradient(135deg, #2a2a3e 0%, #1e1e2e 100%);
+        padding: 15px 20px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #333;
+        transition: all 0.3s ease;
+    }
+
+    .discount-item:hover {
+        border-color: var(--primary-color);
+        transform: translateX(5px);
+    }
+
+    .discount-code {
+        background: linear-gradient(135deg, var(--primary-color), #b20710);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 0.9em;
+        letter-spacing: 1px;
+    }
+
+    .discount-value {
+        color: #4ade80;
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    .discount-type {
+        background: rgba(255, 255, 255, 0.1);
+        color: #999;
+        padding: 4px 10px;
+        border-radius: 10px;
+        font-size: 0.85em;
+        margin-left: 10px;
+    }
+
+    .total-discount {
+        background: rgba(74, 222, 128, 0.1);
+        border: 2px solid rgba(74, 222, 128, 0.3);
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .total-discount strong {
+        color: #4ade80;
+        font-size: 1.3em;
+    }
+
+    .no-discount {
+        color: #666;
+        font-style: italic;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .price-summary {
+        background: linear-gradient(135deg, var(--primary-color), #b20710);
+        padding: 20px;
+        border-radius: 12px;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .price-summary strong {
+        display: block;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9em;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .price-summary .amount {
+        color: white;
+        font-size: 2em;
+        font-weight: bold;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+
+    .btn-custom {
+        padding: 15px 35px;
+        border-radius: 30px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+        text-decoration: none;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), #b20710);
+        color: white;
+        box-shadow: 0 5px 20px rgba(229, 9, 20, 0.4);
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(229, 9, 20, 0.6);
+    }
+
+    .btn-secondary-custom {
+        background: transparent;
+        color: #b0b0b0;
+        border: 2px solid #4a4a5e;
+    }
+
+    .btn-secondary-custom:hover {
+        background: #4a4a5e;
+        color: white;
+        transform: translateY(-3px);
+    }
+
+    @media (max-width: 768px) {
+        .confirmation-header h1 {
+            font-size: 1.8em;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .button-group {
+            flex-direction: column;
+        }
+
+        .btn-custom {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="confirmation-header">
+        <div class="success-icon">🎉</div>
+        <h1>Booking Confirmed!</h1>
+        <p style="color: #999; font-size: 1.1em;">Your ticket has been successfully booked</p>
+    </div>
+
+    <div class="confirmation-card">
+        <h4 class="card-title">{{ ticket[5] }} - {{ ticket[6] }}</h4>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <strong>🎬 Movie</strong>
+                <span>{{ ticket[7] }}</span>
+            </div>
+
+            <div class="info-item">
+                <strong>📅 Show Date</strong>
+                <span>{{ ticket[3] }}</span>
+            </div>
+
+            <div class="info-item">
+                <strong>🕐 Start Time</strong>
+                <span>{{ ticket[4].strftime('%H:%M') if ticket[4] is not string else ticket[4][:5] }}</span>
+            </div>
+
+            <div class="info-item">
+                <strong>💺 Number of Seats</strong>
+                <span>{{ ticket[2] }} seat(s)</span>
+            </div>
+        </div>
+
+        <div class="seats-display">
+            <strong>Selected Seats:</strong>
+            <div class="seat-badges">
+                {% for seat in seats %}
+                    <span class="seat-badge">Seat {{ seat }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="discount-section">
+            <h5>💳 Applied Discounts</h5>
+            {% if discounts %}
+                <div class="discount-list">
+                    {% for disc in discounts %}
+                        <div class="discount-item">
+                            <div>
+                                <span class="discount-code">{{ disc.DiscountCode }}</span>
+                                <span class="discount-type">{{ disc.DiscountType }}</span>
+                            </div>
+                            <span class="discount-value">
+                                -{{ "{:,.0f}".format(disc.DiscountValue).replace(",", ".") }} VND
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                {% if total_discount > 0 %}
+                    <div class="total-discount">
+                        <strong>Total Savings: {{ "{:,.0f}".format(total_discount).replace(",", ".") }} VND</strong>
+                    </div>
+                {% endif %}
+            {% else %}
+                <p class="no-discount">No discounts applied</p>
+            {% endif %}
+        </div>
+
+        <div class="price-summary">
+            <strong>Total Amount Paid</strong>
+            <div class="amount">{{ "{:,.0f}".format(ticket[1]).replace(",", ".") }} VND</div>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <a href="{{ url_for('customer.movies') }}" class="btn-custom btn-primary-custom">
+            🎟️ Book Another Ticket
+        </a>
+        <a href="{{ url_for('customer.dashboard') }}" class="btn-custom btn-secondary-custom">
+            📊 Go to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

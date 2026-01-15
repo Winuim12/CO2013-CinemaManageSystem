@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if show %}Edit{% else %}Add{% endif %} Shows
+{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{{ url_for('manager.shows') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Shows
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header {% if show %}bg-warning{% else %}bg-primary{% endif %} text-white">
+        <h3 class="mb-0">
+            {% if show %}
+                <i class="fas fa-edit"></i> Edit Show
+            {% else %}
+                <i class="fas fa-plus"></i> Add New Show
+            {% endif %}
+        </h3>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <!-- Movie (fixed) -->
+            <div class="mb-3">
+                <label class="form-label">Movie</label>
+                {% if show %}
+                    <input type="text" class="form-control" value="{{ show.Title }}" readonly>
+                    <input type="hidden" name="movie_id" value="{{ show.MovieID }}">
+                {% else %}
+                    <select class="form-select" name="movie_id" required>
+                        <option value="">Select Movie</option>
+                        {% for movie in movies %}
+                            <option value="{{ movie[0] }}">{{ movie[1] }}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+            </div>
+
+            <!-- Booked / Capacity (readonly, only for editing) -->
+            {% if show %}
+            <div class="mb-3">
+                <label class="form-label">Booked / Capacity</label>
+                <input type="text" class="form-control" value="{{ show.BookedSeats }}/{{ show.Capacity }}" readonly>
+            </div>
+            {% endif %}
+
+            <!-- Editable fields in one row -->
+            <div class="row g-3">
+                <!-- Auditorium -->
+                <div class="col-md-4">
+                    <label for="auditorium_id" class="form-label">Auditorium *</label>
+                    <select class="form-select" id="auditorium_id" name="auditorium_id" required>
+                        {% for aud in auditoriums %}
+                            <option value="{{ aud[0] }}"
+                                {% if show and aud[0] == show.AuditoriumID %}selected{% endif %}>
+                                {{ aud[1] }} - {{ aud[2] }} ({{ aud[3] }} seats)
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Show Date -->
+                <div class="col-md-4">
+                    <label for="show_date" class="form-label">Show Date *</label>
+                    <input type="date" class="form-control" id="show_date" name="show_date"
+                           value="{{ show.ShowDate if show else '' }}" required>
+                </div>
+
+                <!-- Start Time -->
+                <div class="col-md-4">
+                    <label for="start_time" class="form-label">Start Time *</label>
+                    <input type="time" class="form-control" id="start_time" name="start_time"
+                           value="{{ show.StartTime.strftime('%H:%M') if show and show.StartTime else '' }}" required>
+                </div>
+            </div>
+
+            <hr>
+            <div class="d-flex justify-content-between mt-3">
+                <a href="{{ url_for('manager.shows') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> {% if show %}Update Show{% else %}Save Show{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

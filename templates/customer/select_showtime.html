@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+{% block title %}Select Showtime{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: #0a0a0a;
+    }
+
+    .showtime-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 4rem;
+        background: #0a0a0a;
+    }
+
+    .page-header {
+        text-align: center;
+        padding: 3rem 0 2.5rem;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+        border-radius: 2px;
+        box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        color: #ffffff;
+        letter-spacing: -0.5px;
+    }
+
+    .movie-name {
+        color: #ef4444;
+        display: block;
+        font-size: 2rem;
+        margin-top: 0.5rem;
+        text-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+    }
+
+    .subtitle {
+        color: #9ca3af;
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+    }
+
+    .date-section {
+        margin-bottom: 4rem;
+    }
+
+    .date-header {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+        color: white;
+        padding: 14px 28px;
+        border-radius: 50px;
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4), 0 0 40px rgba(220, 38, 38, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .city-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .city-header {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #f3f4f6;
+        margin-bottom: 1.5rem;
+        padding: 0 0 0.75rem 0;
+        border-bottom: 2px solid #1f2937;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .cinema-card {
+        background: #1a1a1a;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        border: 1px solid #2d2d2d;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .cinema-card:hover {
+        box-shadow: 0 12px 40px rgba(220, 38, 38, 0.2), 0 0 60px rgba(220, 38, 38, 0.1);
+        transform: translateY(-4px);
+        border-color: #dc2626;
+        background: #1f1f1f;
+    }
+
+    .cinema-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #f9fafb;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #2d2d2d;
+    }
+
+    .cinema-icon {
+        font-size: 1.4rem;
+        background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.3));
+    }
+
+    .showtime-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 14px;
+    }
+
+    .showtime-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .showtime-btn {
+        padding: 14px 16px;
+        border: 2px solid #2d2d2d;
+        border-radius: 12px;
+        background: #1a1a1a;
+        color: #e5e7eb;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        display: block;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .showtime-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+        opacity: 0;
+        transition: opacity 0.25s ease;
+    }
+
+    .showtime-btn span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .showtime-type {
+        text-align: center;
+        font-size: 0.75rem;
+        color: #9ca3af;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .showtime-btn:hover {
+        border-color: #dc2626;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4), 0 0 30px rgba(220, 38, 38, 0.2);
+        background: #dc2626;
+    }
+
+    .showtime-btn:hover::before {
+        opacity: 1;
+    }
+
+    .showtime-btn:active {
+        transform: translateY(-1px);
+    }
+
+    .showtime-item:hover .showtime-type {
+        color: #ef4444;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 5rem 2rem;
+        color: #6b7280;
+        background: #1a1a1a;
+        border-radius: 20px;
+        border: 2px dashed #2d2d2d;
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.3;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        color: #d1d5db;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        font-size: 1.1rem;
+        color: #9ca3af;
+    }
+
+    @media (max-width: 1024px) {
+        .showtime-grid {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .showtime-container {
+            padding: 1.5rem 1rem 3rem;
+        }
+
+        .page-header {
+            padding: 2rem 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+        }
+
+        .movie-name {
+            font-size: 1.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+        }
+
+        .date-header {
+            font-size: 1rem;
+            padding: 12px 24px;
+        }
+
+        .city-header {
+            font-size: 1.2rem;
+        }
+
+        .cinema-card {
+            padding: 1.5rem;
+            border-radius: 16px;
+        }
+
+        .cinema-name {
+            font-size: 1.1rem;
+        }
+
+        .showtime-grid {
+            grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+            gap: 10px;
+        }
+
+        .showtime-btn {
+            padding: 14px 16px;
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .movie-name {
+            font-size: 1.3rem;
+        }
+
+        .showtime-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+</style>
+
+<div class="showtime-container">
+    <div class="page-header">
+        <h1 class="page-title">
+            Select Your Showtime
+            <span class="movie-name">{{ movie.Title }}</span>
+        </h1>
+        <p class="subtitle">Choose your preferred date, location and time</p>
+    </div>
+
+    {% if grouped_showtimes %}
+        {% for date, cities in grouped_showtimes.items() %}
+            <div class="date-section">
+                <div class="date-header">
+                    <span>📅</span>
+                    <span>{{ date }}</span>
+                </div>
+
+                {% for city, cinemas in cities.items() %}
+                    <div class="city-section">
+                        <h2 class="city-header">
+                            <span>📍</span>
+                            <span>{{ city }}</span>
+                        </h2>
+
+                        {% for cinema, times in cinemas.items() %}
+                            <div class="cinema-card">
+                                <div class="cinema-name">
+                                    <span class="cinema-icon">🎭</span>
+                                    <span>{{ cinema }}</span>
+                                </div>
+
+                                <div class="showtime-grid">
+                                    {% for t in times %}
+                                        <div class="showtime-item">
+                                            <a href="{{ url_for('customer.select_seats',
+                                                                movie_id=movie.MovieID,
+                                                                cinema_id=t.CinemaID,
+                                                                auditorium_id=t.AuditoriumID,
+                                                                show_date=date,
+                                                                start_time=t.StartTime,
+                                                                auditorium_type=t.AuditoriumType,
+                                                                cinema_name=t.CinemaName) }}"
+                                               class="showtime-btn">
+                                                <span>{{ t.StartTime.strftime('%H:%M') }}</span>
+                                            </a>
+                                            <div class="showtime-type">{{ t.AuditoriumType }}</div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🎬</div>
+            <h3>No Showtimes Available</h3>
+            <p>Please check back later for updated showtimes</p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

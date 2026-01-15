@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Confirm Booking{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">✔️ Confirm Your Booking</h2>
+
+<p><strong>Movie:</strong> {{ movie.MovieName }}</p>
+<p><strong>Showtime:</strong> {{ show.ShowDate }} {{ show.StartTime }}</p>
+<p><strong>Seats:</strong> {{ seat_list|join(', ') }}</p>
+
+{% if discount %}
+<p><strong>Discount:</strong> {{ discount.DiscountName }} ({{ discount.Value }}%)</p>
+{% endif %}
+
+<form method="POST" action="{{ url_for('customer.payment') }}">
+    <input type="hidden" name="show_id" value="{{ show.ShowID }}">
+    {% for s in seat_list %}
+    <input type="hidden" name="selected_seats" value="{{ s }}">
+    {% endfor %}
+    <input type="hidden" name="discount_id" value="{{ discount.DiscountID if discount }}">
+
+    <button class="btn btn-primary btn-lg">Proceed to Payment</button>
+</form>
+{% endblock %}

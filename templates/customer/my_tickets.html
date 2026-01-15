@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}My Tickets{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2 class="mb-4 text-primary">🎟 My Tickets</h2>
+
+    {% if tickets and tickets|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped text-center align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Movie</th>
+                        <th>Cinema</th>
+                        <th>Auditorium Name</th>
+                        <th>Auditorium Type</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Seats</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in tickets %}
+                    <tr>
+                        <td>{{ t.MovieName }}</td>
+                        <td>{{ t.CinemaName }}</td>
+                        <td>{{ t.AuditoriumName }}</td>
+                        <td>{{ t.AuditoriumType }}</td>
+                        <td>{{ t.ShowDate }}</td>
+                        <td>{{ t.StartTime.strftime('%H:%M') if t.StartTime is not string else t.StartTime[:5] }}</td>
+                        <td>{{ t.Seats|join(', ') }}</td>
+                        <td>{{ "{:,.0f}".format(t.PriceTotal).replace(",", ".") }} VND</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            You have not booked any tickets yet.
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

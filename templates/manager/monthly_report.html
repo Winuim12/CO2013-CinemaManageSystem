@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Monthly Revenue Report{% endblock %}
+
+{% block extra_css %}
+<style>
+  .dashboard-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #8b0000 100%);
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(229, 9, 20, 0.3);
+  }
+
+  .dashboard-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+
+  .dashboard-header p {
+    margin: 10px 0 0 0;
+    opacity: 0.9;
+    font-size: 1.1rem;
+  }
+
+  .chart-container {
+    background: rgba(34, 31, 31, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    margin-bottom: 30px;
+  }
+
+  .chart-container h5 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+  }
+
+  .form-container {
+    background: rgba(34, 31, 31, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .form-label {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .cinema-row {
+    background: rgba(34, 31, 31, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+  }
+
+  .cinema-row:hover {
+    background: rgba(229, 9, 20, 0.1);
+    border-color: var(--primary-color);
+    transform: translateX(5px);
+  }
+
+  .cinema-name {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .cinema-id {
+    color: #888;
+    font-size: 0.85rem;
+  }
+
+  .metric-label {
+    color: #aaa;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+  }
+
+  .metric-value {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: bold;
+  }
+
+  .revenue-value {
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+
+  .empty-state {
+    background: rgba(34, 31, 31, 0.6);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 60px;
+    text-align: center;
+  }
+
+  .empty-state i {
+    color: #666;
+    margin-bottom: 20px;
+  }
+
+  .btn-generate {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #b20710 100%);
+    border: none;
+    padding: 12px 35px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+  }
+
+  .btn-generate:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(229, 9, 20, 0.5);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-header">
+  <h1><i class="fas fa-chart-line"></i> Monthly Revenue Dashboard</h1>
+</div>
+
+<div class="form-container">
+  <form method="GET" class="row g-3">
+    <div class="col-md-5">
+      <label class="form-label"><i class="fas fa-calendar-alt"></i> Month</label>
+      <select class="form-select" name="month" required>
+        <option value="1" {% if month == '1' or month == 1 %}selected{% endif %}>January</option>
+        <option value="2" {% if month == '2' or month == 2 %}selected{% endif %}>February</option>
+        <option value="3" {% if month == '3' or month == 3 %}selected{% endif %}>March</option>
+        <option value="4" {% if month == '4' or month == 4 %}selected{% endif %}>April</option>
+        <option value="5" {% if month == '5' or month == 5 %}selected{% endif %}>May</option>
+        <option value="6" {% if month == '6' or month == 6 %}selected{% endif %}>June</option>
+        <option value="7" {% if month == '7' or month == 7 %}selected{% endif %}>July</option>
+        <option value="8" {% if month == '8' or month == 8 %}selected{% endif %}>August</option>
+        <option value="9" {% if month == '9' or month == 9 %}selected{% endif %}>September</option>
+        <option value="10" {% if month == '10' or month == 10 %}selected{% endif %}>October</option>
+        <option value="11" {% if month == '11' or month == 11 %}selected{% endif %}>November</option>
+        <option value="12" {% if month == '12' or month == 12 %}selected{% endif %}>December</option>
+      </select>
+    </div>
+
+    <div class="col-md-5">
+      <label class="form-label"><i class="fas fa-calendar"></i> Year</label>
+      <input type="number" class="form-control" name="year" value="{{ year }}" min="1900" max="2100" required>
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+      <button class="btn btn-primary btn-generate w-100">
+        <i class="fas fa-search"></i> Generate
+      </button>
+    </div>
+  </form>
+</div>
+
+{% if data_list %}
+<div class="chart-container">
+  <h5><i class="fas fa-list-alt"></i> Detailed Cinema Performance</h5>
+
+  {% for row in data_list %}
+  <div class="cinema-row">
+    <div class="row align-items-center">
+      <div class="col-lg-3 mb-3 mb-lg-0">
+        <div class="cinema-name">{{ row.CinemaName }}</div>
+        <div class="cinema-id">Cinema ID: {{ row.CinemaID }}</div>
+      </div>
+
+      <div class="col-lg-3 col-md-4 mb-3 mb-lg-0">
+        <div class="metric-label"><i class="fas fa-users"></i> Customers</div>
+        <div class="metric-value">{{ "{:,}".format(row.TotalCustomers).replace(",", ".") }}</div>
+      </div>
+
+      <div class="col-lg-3 col-md-4 mb-3 mb-lg-0">
+        <div class="metric-label"><i class="fas fa-ticket-alt"></i> Tickets Sold</div>
+        <div class="metric-value">{{ "{:,}".format(row.TotalTickets).replace(",", ".") }}</div>
+      </div>
+
+      <div class="col-lg-3 col-md-4">
+        <div class="metric-label"><i class="fas fa-money-bill-wave"></i> Revenue</div>
+        <div class="revenue-value">{{ "{:,.0f}".format(row.MonthlyRevenue).replace(",", ".") }} VND</div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+
+<div class="empty-state">
+  <i class="fas fa-inbox fa-5x"></i>
+  <h4 class="mt-3 mb-2" style="color: #fff;">No Data Available</h4>
+  <p class="text-muted">No revenue data found for the selected month and year.</p>
+  <p class="text-muted">Please try selecting a different time period.</p>
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

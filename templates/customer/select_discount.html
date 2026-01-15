@@ -1,0 +1,515 @@
+{% extends "base.html" %}
+{% block title %}Select Discount{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+    }
+
+    .page-header {
+        text-align: center;
+        padding: 40px 0 30px;
+        border-bottom: 2px solid var(--primary-color);
+        margin-bottom: 40px;
+    }
+
+    .page-header h1 {
+        font-size: 2.5em;
+        color: var(--primary-color);
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+        text-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
+    }
+
+    .page-header p {
+        color: #b0b0b0;
+        font-size: 1.1em;
+    }
+
+    .booking-summary {
+        background: linear-gradient(135deg, #1e1e2e 0%, #252538 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid #333;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .booking-summary h3 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        font-size: 1.4em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .booking-summary h3::before {
+        content: "🎬";
+        font-size: 1.2em;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .summary-item {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 3px solid var(--primary-color);
+    }
+
+    .summary-item label {
+        color: #999;
+        font-size: 0.9em;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .summary-item span {
+        color: #fff;
+        font-size: 1.1em;
+        font-weight: 600;
+    }
+
+    .discount-section {
+        background: linear-gradient(135deg, #1e1e2e 0%, #252538 100%);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid #333;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .discount-section h2 {
+        color: var(--primary-color);
+        margin-bottom: 25px;
+        font-size: 1.8em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .discount-section h2::before {
+        content: "🎟️";
+        font-size: 1em;
+    }
+
+    .discount-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .discount-card {
+        background: linear-gradient(135deg, #2a2a3e 0%, #1e1e2e 100%);
+        border-radius: 12px;
+        padding: 20px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .discount-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary-color), #b20710);
+    }
+
+    .discount-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary-color);
+        box-shadow: 0 10px 30px rgba(229, 9, 20, 0.3);
+    }
+
+    .discount-card.selected {
+        border-color: var(--primary-color);
+        background: linear-gradient(135deg, #3a2a3e 0%, #2e1e2e 100%);
+        box-shadow: 0 0 30px rgba(229, 9, 20, 0.4);
+    }
+
+    .discount-card input[type="checkbox"] {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        accent-color: var(--primary-color);
+    }
+
+    .discount-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-right: 30px;
+    }
+
+    .discount-code {
+        background: linear-gradient(135deg, var(--primary-color), #b20710);
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.9em;
+        letter-spacing: 1px;
+    }
+
+    .discount-type {
+        background: rgba(255, 255, 255, 0.1);
+        color: #b0b0b0;
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.85em;
+    }
+
+    .discount-value {
+        font-size: 2em;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin: 15px 0;
+        text-align: center;
+    }
+
+    .discount-details {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .detail-item {
+        text-align: center;
+    }
+
+    .detail-item label {
+        display: block;
+        color: #999;
+        font-size: 0.85em;
+        margin-bottom: 5px;
+    }
+
+    .detail-item span {
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .selected-count {
+        text-align: center;
+        padding: 15px;
+        background: rgba(229, 9, 20, 0.1);
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(229, 9, 20, 0.3);
+    }
+
+    .selected-count span {
+        color: var(--primary-color);
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+
+    .no-discount {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+    }
+
+    .no-discount::before {
+        content: "🎫";
+        display: block;
+        font-size: 4em;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .button-group-horizontal {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-custom-primary {
+        padding: 15px 40px;
+        border: none;
+        border-radius: 30px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(135deg, var(--primary-color), #b20710);
+        color: #fff;
+    }
+
+    .btn-custom-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(229, 9, 20, 0.5);
+    }
+
+    .btn-custom-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-custom-secondary {
+        padding: 15px 40px;
+        border-radius: 30px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        background: transparent;
+        color: #b0b0b0;
+        border: 2px solid #4a4a5e;
+    }
+
+    .btn-custom-secondary:hover {
+        background: #4a4a5e;
+        color: #fff;
+        border-color: #5a5a6e;
+        transform: translateY(-3px);
+    }
+
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 1.8em;
+        }
+
+        .discount-cards {
+            grid-template-columns: 1fr;
+        }
+
+        .button-group-horizontal {
+            flex-direction: column-reverse;
+        }
+
+        .btn-custom-primary,
+        .btn-custom-secondary {
+            width: 100%;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .discount-card {
+        animation: fadeIn 0.5s ease forwards;
+        opacity: 0;
+    }
+
+    .discount-card:nth-child(1) { animation-delay: 0.1s; }
+    .discount-card:nth-child(2) { animation-delay: 0.2s; }
+    .discount-card:nth-child(3) { animation-delay: 0.3s; }
+    .discount-card:nth-child(4) { animation-delay: 0.4s; }
+    .discount-card:nth-child(5) { animation-delay: 0.5s; }
+    .discount-card:nth-child(6) { animation-delay: 0.6s; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Select Discounts</h1>
+    <p>Choose one or more discount codes to apply to your booking</p>
+</div>
+
+{# ------------ MACRO FOR COMMON HIDDEN INPUTS ------------ #}
+{% macro hidden_fields() %}
+    <input type="hidden" name="movie_id" value="{{ movie.MovieID }}">
+    <input type="hidden" name="cinema_id" value="{{ cinema_id }}">
+    <input type="hidden" name="auditorium_id" value="{{ auditorium_id }}">
+    <input type="hidden" name="show_date" value="{{ show_date }}">
+    <input type="hidden" name="start_time" value="{{ start_time }}">
+    <input type="hidden" name="cinema_name" value="{{ cinema_name }}">
+    <input type="hidden" name="auditorium_type" value="{{ auditorium_type }}">
+
+    {% for seat in selected_seats %}
+        <input type="hidden" name="selected_seats" value="{{ seat }}">
+    {% endfor %}
+{% endmacro %}
+
+<!-- Booking Summary -->
+<div class="booking-summary">
+    <h3>Booking Summary</h3>
+    <div class="summary-grid">
+        <div class="summary-item">
+            <label>Movie</label>
+            <span>{{ movie.Title }}</span>
+        </div>
+        <div class="summary-item">
+            <label>Cinema</label>
+            <span>{{ cinema_name }}</span>
+        </div>
+        <div class="summary-item">
+            <label>Show Date</label>
+            <span>{{ show_date }}</span>
+        </div>
+        <div class="summary-item">
+            <label>Show Time</label>
+            <span>{{ start_time.strftime('%H:%M') if start_time is not string else start_time[:5] }}</span>
+        </div>
+        <div class="summary-item">
+            <label>Selected Seats</label>
+            <span>{{ selected_seats|join(', ') }}</span>
+        </div>
+        <div class="summary-item">
+            <label>Number of Seats</label>
+            <span>{{ selected_seats|length }} seat(s)</span>
+        </div>
+    </div>
+</div>
+
+<!-- Discount Section -->
+<div class="discount-section">
+    <h2>Available Discounts</h2>
+    
+    {# ------------ APPLY DISCOUNT FORM ------------ #}
+    <form method="POST" action="{{ url_for('customer.review_booking') }}" id="discountForm">
+        {{ hidden_fields() }}
+
+        {% if discounts %}
+        
+        <!-- Selected Count Display -->
+        <div class="selected-count" id="selectedCount" style="display: none;">
+            <span id="countText">0 discount(s) selected</span>
+        </div>
+
+        <div class="discount-cards" id="discountCards">
+            {% for d in discounts %}
+            <label class="discount-card">
+                <input type="checkbox" name="discount_ids" value="{{ d.DiscountID }}">
+                <div class="discount-header">
+                    <span class="discount-code">{{ d.DiscountCode }}</span>
+                    <span class="discount-type">{{ d.DiscountType }}</span>
+                </div>
+                <div class="discount-value">
+                    {% if d.DiscountType == 'Percentage' %}
+                        {{ d.DiscountValue }}% OFF
+                    {% else %}
+                        {{ "{:,.0f}".format(d.DiscountValue).replace(',', '.') }} VND
+                    {% endif %}
+                </div>
+                <div class="discount-details">
+                    <div class="detail-item">
+                        <label>Quantity</label>
+                        <span>{{ d.Quantity }} left</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Expires</label>
+                        <span>{{ d.ExpiryDate }}</span>
+                    </div>
+                </div>
+            </label>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="no-discount">
+            <p>No discounts available at the moment.</p>
+        </div>
+        {% endif %}
+
+        {# Button group - Both buttons in same row #}
+        <div class="button-group-horizontal">
+            <button type="button" class="btn-custom-secondary" onclick="skipDiscount()">Skip Discount</button>
+            <button type="submit" class="btn-custom-primary" id="applyBtn">Apply Discount(s)</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Handle discount card selection with checkboxes
+    const cards = document.querySelectorAll('.discount-card');
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name="discount_ids"]');
+    const selectedCountDiv = document.getElementById('selectedCount');
+    const countText = document.getElementById('countText');
+    const applyBtn = document.getElementById('applyBtn');
+
+    // Update selected count and UI
+    function updateSelectedCount() {
+        const checkedCount = document.querySelectorAll('input[type="checkbox"][name="discount_ids"]:checked').length;
+        
+        if (checkedCount > 0) {
+            selectedCountDiv.style.display = 'block';
+            countText.textContent = `${checkedCount} discount(s) selected`;
+            applyBtn.textContent = `Apply ${checkedCount} Discount(s)`;
+        } else {
+            selectedCountDiv.style.display = 'none';
+            applyBtn.textContent = 'Apply Discount(s)';
+        }
+    }
+
+    // Handle card click
+    cards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            // Don't toggle if clicking directly on checkbox
+            if (e.target.type === 'checkbox') return;
+            
+            const checkbox = this.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                this.classList.add('selected');
+            } else {
+                this.classList.remove('selected');
+            }
+            
+            updateSelectedCount();
+        });
+    });
+
+    // Handle checkbox change
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                this.closest('.discount-card').classList.add('selected');
+            } else {
+                this.closest('.discount-card').classList.remove('selected');
+            }
+            updateSelectedCount();
+        });
+    });
+
+    // Handle skip discount
+    function skipDiscount() {
+        const form = document.getElementById('discountForm');
+        // Uncheck all checkboxes
+        checkboxes.forEach(cb => cb.checked = false);
+        form.submit();
+    }
+</script>
+{% endblock %}

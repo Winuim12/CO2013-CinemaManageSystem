@@ -1,0 +1,12 @@
+Flask
+Flask-WTF
+SQLAlchemy
+pyodbc
+WTForms
+python-dateutil
+Werkzeug
+Jinja2
+MarkupSafe
+itsdangerous
+click
+blinker

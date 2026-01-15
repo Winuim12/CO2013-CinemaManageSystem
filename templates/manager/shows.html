@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Shows{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-calendar-alt"></i> Shows</h1>
+    <a href="{{ url_for('manager.show_new') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Show
+    </a>
+</div>
+
+<!-- Filter Box -->
+<div class="filter-box mb-4">
+    <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">Movie</label>
+            <select class="form-select" name="movie_id">
+                <option value="">All Movies</option>
+                {% for movie in movies %}
+                <option value="{{ movie[0] }}" {% if filters.get('movie_id') == movie[0]|string %}selected{% endif %}>
+                    {{ movie[1] }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Show Date</label>
+            <input type="date" class="form-control" name="show_date" value="{{ filters.get('show_date', '') }}">
+        </div>
+        <div class="col-md-6 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+            <a href="{{ url_for('manager.shows') }}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Clear
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Auditorium</th>
+                        <th>Type</th>
+                        <th>Capacity</th>
+                        <th>Date</th>
+                        <th>Start Time</th>
+                        <th>Movie Title</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for show in shows %}
+                    <tr>
+                        <td>{{ show[8] }}</td>
+                        <td>{{ show[9] }}</td>
+                        <td><span class="badge bg-secondary">{{ show[10] }}</span></td>
+                        <td>{{ show[4] }}</td>
+                        <td>{{ show[5].strftime("%H:%M") if show[5] else '' }}</td>
+                        <td>{{ show[6] }}</td>
+                        <td>
+                            <!-- View button -->
+                            <a href="{{ url_for('manager.show_detail', 
+                                                movie_id=show[1], 
+                                                cinema_id=show[2], 
+                                                auditorium_id=show[3], 
+                                                show_date=show[4], 
+                                                start_time=show[5]) }}" 
+                               class="btn btn-sm btn-info">
+                                <i class="fas fa-eye"></i>
+                            </a>
+
+                            <!-- Update/Edit button -->
+                            <a href="{{ url_for('manager.show_edit', 
+                                                movie_id=show[1], 
+                                                cinema_id=show[2], 
+                                                auditorium_id=show[3], 
+                                                show_date=show[4], 
+                                                start_time=show[5]) }}" 
+                               class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i>
+                            </a>
+
+                            <!-- Delete button -->
+                            <form method="POST" action="{{ url_for('manager.show_delete') }}" style="display: inline;">
+                                <input type="hidden" name="movie_id" value="{{ show[1] }}">
+                                <input type="hidden" name="cinema_id" value="{{ show[2] }}">
+                                <input type="hidden" name="auditorium_id" value="{{ show[3] }}">
+                                <input type="hidden" name="show_date" value="{{ show[4] }}">
+                                <input type="hidden" name="start_time" value="{{ show[5] }}">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">No shows found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

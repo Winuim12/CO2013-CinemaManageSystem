@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Confirm Your Booking</h1>
+
+<form method="POST" action="{{ url_for('customer.payment') }}">
+    <input type="hidden" name="movie_id" value="{{ movie_id }}">
+    <input type="hidden" name="cinema_id" value="{{ cinema_id }}">
+    <input type="hidden" name="auditorium_id" value="{{ auditorium_id }}">
+    <input type="hidden" name="show_date" value="{{ show_date }}">
+    <input type="hidden" name="start_time" value="{{ start_time }}">
+
+    <h3>Selected Seats:</h3>
+    <ul>
+        {% for seat in selected_seats %}
+            <li>Seat {{ seat }}</li>
+            <input type="hidden" name="selected_seats" value="{{ seat }}">
+        {% endfor %}
+    </ul>
+
+    <h3>Discount (optional):</h3>
+    <select name="discount_id" class="form-select">
+        <option value="">No Discount</option>
+        {% for d in discounts %}
+            <option value="{{ d[0] }}">
+                {{ d[1] }} - Value: {{ d[3] }} VND - Expiry: {{ d[4] }} - Quantity: {{ d[5] }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <br>
+    <button type="submit" class="btn btn-success">Pay & Confirm</button>
+</form>
+{% endblock %}

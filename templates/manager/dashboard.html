@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-gradient text-white">
+                <div class="card-body p-4">
+                    <h1 class="mb-2"><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+                    <p class="mb-0 opacity-75">Welcome back! Here's what's happening with your cinema today.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Action Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow h-100 hover-card">
+                <div class="card-body text-center p-4 d-flex flex-column">
+                    <div class="icon-circle bg-danger mb-3 mx-auto">
+                        <i class="fas fa-calendar-alt fa-3x text-white"></i>
+                    </div>
+                    <h5 class="card-title font-weight-bold">Shows</h5>
+                    <p class="card-text text-muted flex-grow-1">Manage movie screenings, schedules, and showtimes</p>
+                    <a href="{{ url_for('manager.shows') }}" class="btn btn-danger btn-block mt-3">
+                        <i class="fas fa-arrow-right"></i> View Shows
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow h-100 hover-card">
+                <div class="card-body text-center p-4 d-flex flex-column">
+                    <div class="icon-circle bg-success mb-3 mx-auto">
+                        <i class="fas fa-chart-bar fa-3x text-white"></i>
+                    </div>
+                    <h5 class="card-title font-weight-bold">Reports</h5>
+                    <p class="card-text text-muted flex-grow-1">View revenue analytics and performance metrics</p>
+                    <a href="{{ url_for('manager.monthly_report') }}" class="btn btn-success btn-block mt-3">
+                        <i class="fas fa-arrow-right"></i> View Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow h-100 hover-card">
+                <div class="card-body text-center p-4 d-flex flex-column">
+                    <div class="icon-circle bg-info mb-3 mx-auto">
+                        <i class="fas fa-plus-circle fa-3x text-white"></i>
+                    </div>
+                    <h5 class="card-title font-weight-bold">New Show</h5>
+                    <p class="card-text text-muted flex-grow-1">Create a new movie screening schedule</p>
+                    <a href="{{ url_for('manager.show_new') }}" class="btn btn-info btn-block mt-3">
+                        <i class="fas fa-arrow-right"></i> Add Show
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<!-- Footer -->
+<footer class="text-white mt-5 py-4">
+    <div class="container-fluid px-0">
+        <div class="row">
+
+            <!-- LEFT COLUMN: Company Info -->
+            <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 px-5">
+                <h5 class="fw-bold">Company Info</h5>
+                <p>
+                    We provide the best movie ticket booking experience with fast,
+                    secure, and reliable service.
+                </p>
+            </div>
+
+            <!-- RIGHT SIDE: Support + Contact aligned right -->
+            <div class="col-lg-8 col-md-12 d-flex justify-content-lg-end justify-content-md-start flex-wrap px-5">
+
+                <!-- SUPPORT COLUMN -->
+                <div class="me-5 mb-3 mb-lg-0">
+                    <h5 class="fw-bold">Support</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li>Help Center</li>
+                        <li>Documentation</li>
+                        <li>Privacy</li>
+                    </ul>
+                </div>
+
+                <!-- CONTACT COLUMN -->
+                <div>
+                    <h5 class="fw-bold">Contact</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li>Phone: +84 123 456 789</li>
+                        <li>Email: support@cinema.com</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- COPYRIGHT -->
+        <div class="text-center mt-3">
+            <p class="mb-0">&copy; 2025 Cinema Booking System. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+
+<style>
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+}
+
+/* Footer Styles */
+footer {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #000000;
+}
+
+footer .container-fluid {
+    max-width: 100%;
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+footer .row {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .d-flex.justify-content-lg-end {
+        justify-content: start !important;
+    }
+    .me-5 {
+        margin-right: 2rem !important;
+    }
+    footer .px-5 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    footer .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+</style>
+{% endblock %}
