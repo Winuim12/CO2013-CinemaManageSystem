@@ -124,8 +124,6 @@ Once the app is running:
 4. Book tickets for a session
 5. View customer reservations
 
-*(Include screenshots or example routes here if available.)*
-
 ---
 
 ## Future Enhancements
