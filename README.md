@@ -1,6 +1,6 @@
 # CO2013 Cinema Management System
 
-## 🎬 Overview
+## Overview
 
 **CO2013 Cinema Management System** is a web-based application built with **Flask (Python)** that simulates the core functionalities of a cinema’s management and ticketing system. It was developed as part of the *CO2013 – Database Systems* course to demonstrate database interactions, MVC design patterns, and CRUD operations.
 
@@ -10,13 +10,11 @@
 
 This system supports the following functionalities:
 
-- 🎥 **Movie Listings:** View, add, edit, and delete movie records
-- 🎟️ **Session & Screening Management:** Schedule movie showtimes
-- 🍿 **Ticket Booking:** Reserve tickets for specific sessions
-- 👤 **Customer Interaction:** Manage customer orders and seat assignments
-- 📊 **Reports / Statistics:** (if implemented) View basic cinema statistics
-
-> *You can expand this section based on the actual features implemented in your repo.*
+- **Movie Listings:** View, add, edit, and delete movie records
+- **Session & Screening Management:** Schedule movie showtimes
+- **Ticket Booking:** Reserve tickets for specific sessions
+- **Customer Interaction:** Manage customer orders and seat assignments
+- **Reports / Statistics:** (if implemented) View basic cinema statistics
 
 ---
 
@@ -153,6 +151,6 @@ Developed by:
 
 ---
 
-## 📝 License
+## License
 
 This project is for **educational purposes only**.
